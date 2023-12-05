@@ -26,19 +26,23 @@ public class CancellationRequestConsumer implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        while (true) {//work indefinitely
             try {
                 CancelBookingDTO request = cancelTransferQueue.take();
-                logger.info("Processing cancellation request for client: " + request.getUuid());
-                try {
-                    reservationService.deleteReservation(request);
-                } catch (Exception e) {
-                    logger.info("Processing failed for the cancellation request for client: " + request.getUuid());
-                    logger.error(e.getMessage());
-                }
+                logger.info(new StringBuilder().append("Processing cancellation request for client: ").append(request.getUuid()).toString());
+                deleteReservation(request);
             } catch (InterruptedException e) {
                 logger.error(e.getMessage());
             }
+        }
+    }
+
+    private void deleteReservation(CancelBookingDTO request) {
+        try {
+            reservationService.deleteReservation(request);
+        } catch (Exception e) {
+            logger.info("Processing failed for the cancellation request for client: " + request.getUuid());
+            logger.error(e.getMessage());
         }
     }
 }

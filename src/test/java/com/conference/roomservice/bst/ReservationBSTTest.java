@@ -9,16 +9,17 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ReservationBSTTest {
+class ReservationBSTTest {
 
     @Test
-    public void testBSTInsertion() {
-        RoomReservationBST<LocalTime> roomReservationBST = new RoomReservationBST<>();
+    void testBSTInsertion() {
+        RoomReservationBst<LocalTime> roomReservationBST = new RoomReservationBst<>();
         roomReservationBST.insert(LocalTime.of(0, 30), 30);
         roomReservationBST.insert(LocalTime.of(1, 1), 30);
         roomReservationBST.insert(LocalTime.of(1, 32), 30);
         Assertions.assertEquals("[00:30 to 01:00, 01:01 to 01:31, 01:32 to 02:02]", roomReservationBST.printInOrder().toString());
-        OperationNotAllowedException thrown = assertThrows(
+        OperationNotAllowedException thrown;
+        thrown = assertThrows(
                 OperationNotAllowedException.class,
                 () -> roomReservationBST.insert(LocalTime.of(1, 30), 30)
         );
@@ -26,8 +27,8 @@ public class ReservationBSTTest {
     }
 
     @Test
-    public void testBSTRemoveRoot() {
-        RoomReservationBST<LocalTime> roomReservationBST = new RoomReservationBST<>();
+    void testBSTRemoveRoot() {
+        RoomReservationBst<LocalTime> roomReservationBST = new RoomReservationBst<>();
         roomReservationBST.insert(LocalTime.of(8, 30), 30);
         roomReservationBST.insert(LocalTime.of(6, 1), 30);
         roomReservationBST.insert(LocalTime.of(10, 32), 30);
@@ -39,8 +40,8 @@ public class ReservationBSTTest {
     }
 
     @Test
-    public void testBSTDeletion() {
-        RoomReservationBST<LocalTime> roomReservationBST = new RoomReservationBST<>();
+    void testBSTDeletion() {
+        RoomReservationBst<LocalTime> roomReservationBST = new RoomReservationBst<>();
         roomReservationBST.insert(LocalTime.of(0, 30), 30);
         roomReservationBST.insert(LocalTime.of(1, 1), 30);
         roomReservationBST.insert(LocalTime.of(1, 32), 30);
@@ -49,8 +50,8 @@ public class ReservationBSTTest {
     }
 
     @Test
-    public void testBSTDeletionForLeftSkewedBST() {
-        RoomReservationBST<LocalTime> roomReservationBST = new RoomReservationBST<>();
+    void testBSTDeletionForLeftSkewedBST() {
+        RoomReservationBst<LocalTime> roomReservationBST = new RoomReservationBst<>();
         roomReservationBST.insert(LocalTime.of(8, 30), 30);
         roomReservationBST.insert(LocalTime.of(7, 1), 30);
         roomReservationBST.insert(LocalTime.of(6, 30), 30);
@@ -62,13 +63,13 @@ public class ReservationBSTTest {
     }
 
     @Test
-    public void testFindAvailableSlots() {
-        RoomReservationBST<LocalTime> roomReservationBST = new RoomReservationBST<>();
+    void testFindAvailableSlots() {
+        RoomReservationBst<LocalTime> roomReservationBST = new RoomReservationBst<>();
         roomReservationBST.insert(LocalTime.of(8, 30), 30);
         roomReservationBST.insert(LocalTime.of(7, 1), 30);
         roomReservationBST.insert(LocalTime.of(6, 30), 30);
         roomReservationBST.insert(LocalTime.of(5, 32), 30);
-        List<RoomReservationBST.Slots> availableSlots = roomReservationBST.findAvailableSlots(LocalTime.MIN, LocalTime.MAX);
+        List<RoomReservationBst.Slots> availableSlots = roomReservationBST.findAvailableSlots(LocalTime.MIN, LocalTime.MAX);
         Assertions.assertEquals("[00:00 to 05:32, 06:02 to 06:30, 07:00 to 07:01, 07:31 to 08:30, 09:00 to 23:59:59.999999999]", availableSlots.toString());
         availableSlots = roomReservationBST.findAvailableSlots(LocalTime.of(5, 33), LocalTime.MAX);
         Assertions.assertEquals("[06:02 to 06:30, 07:00 to 07:01, 07:31 to 08:30, 09:00 to 23:59:59.999999999]", availableSlots.toString());

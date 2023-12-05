@@ -1,6 +1,6 @@
 package com.conference.roomservice.service.impl;
 
-import com.conference.roomservice.bst.RoomReservationBST;
+import com.conference.roomservice.bst.RoomReservationBst;
 import com.conference.roomservice.controller.dto.CancelBookingDTO;
 import com.conference.roomservice.controller.dto.CreateBookingDTO;
 import com.conference.roomservice.controller.dto.ResponseDTO;
@@ -53,8 +53,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public ResponseDTO cancelBooking(CancelBookingDTO cancelBookingDTO) {
-        Optional.ofNullable(reservationService.findByRoomIdAndStartTime(cancelBookingDTO.getRoomId(), cancelBookingDTO.getTime()))
-                .orElseThrow(() -> new BookingNotFoundException("Unable to find the specified booking"));
+        if (reservationService.findByRoomIdAndStartTime(cancelBookingDTO.getRoomId(), cancelBookingDTO.getTime()) == null)
+            throw new BookingNotFoundException("Unable to find the specified booking");
         String uuid = UUID.randomUUID().toString();
         cancelBookingDTO.setUuid(uuid);
         cancelTransferQueue.add(cancelBookingDTO);
@@ -72,7 +72,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Map<Room, List<RoomReservationBST.Slots>> findAvailableSlotsBySearchParameters(LocalTime startTime, LocalTime endTime, Set<Integer> roomIds) {
+    public Map<Room, List<RoomReservationBst.Slots>> findAvailableSlotsBySearchParameters(LocalTime startTime, LocalTime endTime, Set<Integer> roomIds) {
         return reservationService.findAvailableSlotsBySearchParameters(startTime, endTime, roomIds);
     }
 }

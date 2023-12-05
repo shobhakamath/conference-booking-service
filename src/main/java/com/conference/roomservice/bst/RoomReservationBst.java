@@ -8,11 +8,12 @@ import lombok.Setter;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class RoomReservationBST<Temporal> {
+public class RoomReservationBst<T extends Temporal> {
+
 
     private ReservationTree root = null;
 
@@ -91,7 +92,7 @@ public class RoomReservationBST<Temporal> {
     }
 
     public List<Slots> printInOrder() {
-        List<Slots> slots = new ArrayList<Slots>();
+        List<Slots> slots = new ArrayList<>();
         printInOrder(root, slots);
         return slots;
     }
@@ -107,8 +108,13 @@ public class RoomReservationBST<Temporal> {
     public List<Slots> findAvailableSlots(LocalTime startTime, LocalTime endTime) {
         List<Slots> availableSlots = new ArrayList<>();
         findAvailableSlots(root, LocalTime.MIN, LocalTime.MAX, availableSlots);
-        return availableSlots.stream().filter(slot -> !slot.endTime.isBefore(startTime) && !slot.startTime.isAfter(endTime))
-                .collect(Collectors.toList());
+        List<Slots> list = new ArrayList<>();
+        for (Slots slot : availableSlots) {
+            if (!slot.endTime.isBefore(startTime) && !slot.startTime.isAfter(endTime)) {
+                list.add(slot);
+            }
+        }
+        return list;
     }
 
     private void findAvailableSlots(ReservationTree node, LocalTime startTime, LocalTime endTime, List<Slots> availableSlots) {

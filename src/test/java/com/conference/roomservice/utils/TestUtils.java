@@ -8,9 +8,10 @@ public class TestUtils {
     static ObjectMapper objectMapper;
 
     static {
-       objectMapper = new ObjectMapper();
+        objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule()); // Register the JavaTimeModule for LocalDate support
     }
+
     public static String asJsonString(Object obj) {
         try {
             return objectMapper.writeValueAsString(obj);

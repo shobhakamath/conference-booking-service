@@ -14,7 +14,8 @@ import java.time.LocalTime;
 public class CancelBookingDTO {
     @NotNull
     private Integer roomId;
-    @NotNull //TODO not working
+
+    @NotNull
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime time;
 

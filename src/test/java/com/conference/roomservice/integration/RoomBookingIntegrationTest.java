@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.Assert;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -22,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.conference.roomservice.constant.ConferenceConstants.DATE_FORMATTER;
+import static java.lang.Thread.sleep;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = TestRedisConfiguration.class)
 @AutoConfigureMockMvc
-public class RoomBookingIntegrationTest {
+class RoomBookingIntegrationTest {
 
     @Autowired
     ReservationRepository reservationRepository;
@@ -38,7 +38,7 @@ public class RoomBookingIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    public void testInsertionDeletion() throws Exception {
+    void testInsertionDeletion() throws Exception {
         //try to book meeting room for 2 persons. it books room id 1
         createBookingMVC();
         //try to book meeting room for 2 persons. it books next available room with id 2
@@ -78,11 +78,13 @@ public class RoomBookingIntegrationTest {
                 .andExpect(jsonPath("$.response", is("Queued to create the booking")))
                 .andReturn();
     }
-    private void waitAndAssertCheck(int expectedSize) throws Exception{
-        Thread.sleep(1000);
+
+    private void waitAndAssertCheck(int expectedSize) throws Exception {
+        //Sleeping for some time to create the record
+         sleep(1000);
         List<ReservationEntity> reservationEntity = reservationRepository.findByRoomIdInAndMeetingDateAndAndStartTimeBetween(Set.of(1, 2, 3, 4),
                 LocalDate.now(), LocalTime.of(15, 0), LocalTime.of(15, 15), Pageable.unpaged()).stream().toList();
-        Assertions.assertEquals(expectedSize,reservationEntity.size());
+        Assertions.assertEquals(expectedSize, reservationEntity.size());
     }
 
 }

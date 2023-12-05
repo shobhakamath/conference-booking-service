@@ -13,10 +13,6 @@ import static com.conference.roomservice.constant.ConferenceConstants.DATE_FORMA
 public class DurationMultipleOf15Validator implements ConstraintValidator<DurationMultipleOf15, CreateBookingDTO> {
 
     @Override
-    public void initialize(DurationMultipleOf15 constraintAnnotation) {
-    }
-
-    @Override
     public boolean isValid(CreateBookingDTO bookingDTO, ConstraintValidatorContext context) {
         bookingDTO.setConferenceDate(LocalDate.parse(bookingDTO.getDate(), DATE_FORMATTER));
         long durationInMinutes= Duration.between(bookingDTO.getStartTime(),bookingDTO.getEndTime()).toMinutes();

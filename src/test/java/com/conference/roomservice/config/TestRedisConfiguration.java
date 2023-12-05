@@ -3,7 +3,6 @@ package com.conference.roomservice.config;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.data.redis.support.collections.RedisProperties;
 import redis.embedded.RedisServer;
 
 @TestConfiguration

@@ -31,7 +31,7 @@ public class CreateBookingDTO implements Serializable {
     String date;
 
 
-    @NotNull //TODO not working
+    @NotNull
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime startTime;
 

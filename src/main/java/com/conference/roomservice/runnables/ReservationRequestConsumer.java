@@ -19,26 +19,30 @@ public class ReservationRequestConsumer implements Runnable {
 
     @Autowired
     public ReservationRequestConsumer(TransferQueue<CreateBookingDTO> createTransferQueue,
-                                      ReservationService ReservationService) {
+                                      ReservationService reservationService) {
         this.createTransferQueue = createTransferQueue;
-        this.reservationService = ReservationService;
+        this.reservationService = reservationService;
     }
 
     @Override
     public void run() {
-        while (true) {
+        while (true) {//should keep reading from the queue
             try {
                 CreateBookingDTO request = createTransferQueue.take();
-                logger.info("Processing reservation request for client: " + request.getUuid());
-                try {
-                    reservationService.createReservation(request);
-                } catch (Exception e) {
-                    logger.info("Processing failed for the reservation request for client: " + request.getUuid());
-                    logger.error(e.getMessage());
-                }
+                logger.info(new StringBuilder().append("Processing reservation request for client: ").append(request.getUuid()).toString());
+                createReservation(request);
             } catch (InterruptedException e) {
                 logger.error(e.getMessage());
             }
+        }
+    }
+
+    private void createReservation(CreateBookingDTO request) {
+        try {
+            reservationService.createReservation(request);
+        } catch (Exception e) {
+            logger.info(new StringBuilder().append("Processing failed for the reservation request for client: ").append(request.getUuid()).toString());
+            logger.error(e.getMessage());
         }
     }
 }

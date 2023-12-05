@@ -1,6 +1,6 @@
 package com.conference.roomservice.controller;
 
-import com.conference.roomservice.bst.RoomReservationBST;
+import com.conference.roomservice.bst.RoomReservationBst;
 import com.conference.roomservice.controller.dto.CancelBookingDTO;
 import com.conference.roomservice.controller.dto.CreateBookingDTO;
 import com.conference.roomservice.controller.dto.ResponseDTO;
@@ -36,8 +36,6 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-
-    //TODO validation not working
     @Operation(summary = "Reserve a room")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request queued successfully", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReservationEntity.class))}),
@@ -47,7 +45,6 @@ public class BookingController {
     public ResponseDTO createBooking(@Valid @RequestBody CreateBookingDTO bookingDTO) {
         return bookingService.createBooking(bookingDTO);
     }
-
 
     @Operation(summary = "Cancel a booking")
     @ApiResponses(value = {
@@ -72,8 +69,8 @@ public class BookingController {
             @RequestParam(required = false)
             Set<Integer> roomIds,
             Pageable pageable) {
-        startTime= Optional.ofNullable(startTime).orElse(LocalTime.of(0,0));
-        endTime=Optional.ofNullable(endTime).orElse(LocalTime.of(23,59));
+        startTime = Optional.ofNullable(startTime).orElse(LocalTime.of(0, 0));
+        endTime = Optional.ofNullable(endTime).orElse(LocalTime.of(23, 59));
         return bookingService.findBySearchParameters(startTime, endTime, roomIds, pageable);
     }
 
@@ -81,7 +78,7 @@ public class BookingController {
     @Operation(summary = "Get available slots by pagination based on request params ")
     @GetMapping("/availableSlots")
     @ResponseStatus(HttpStatus.OK)
-    public Map<Room, List<RoomReservationBST.Slots>> getAvailableSlots(
+    public Map<Room, List<RoomReservationBst.Slots>> getAvailableSlots(
             @RequestParam(required = false)
             @DateTimeFormat(pattern = "HH:mm")
             LocalTime startTime,
@@ -89,12 +86,11 @@ public class BookingController {
             @DateTimeFormat(pattern = "HH:mm")
             LocalTime endTime,
             @RequestParam(required = false)
-            Set<Integer> roomIds ) {
-        startTime= Optional.ofNullable(startTime).orElse(LocalTime.of(0,0));
-        endTime=Optional.ofNullable(endTime).orElse(LocalTime.of(23,59));
+            Set<Integer> roomIds) {
+        startTime = Optional.ofNullable(startTime).orElse(LocalTime.of(0, 0));
+        endTime = Optional.ofNullable(endTime).orElse(LocalTime.of(23, 59));
         return bookingService.findAvailableSlotsBySearchParameters(startTime, endTime, roomIds);
     }
-
 
 
 }

@@ -1,6 +1,6 @@
 package com.conference.roomservice.service.impl;
 
-import com.conference.roomservice.bst.RoomReservationBST;
+import com.conference.roomservice.bst.RoomReservationBst;
 import com.conference.roomservice.controller.dto.CancelBookingDTO;
 import com.conference.roomservice.controller.dto.CreateBookingDTO;
 import com.conference.roomservice.entity.ReservationEntity;
@@ -39,10 +39,10 @@ public class ReservationServiceImpl implements ReservationService {
     private final RoomService roomService;
 
     private final SchedulerService schedulerService;
-    private final Map<Integer, RoomReservationBST<LocalTime>> roomTypeReservationsCache;
+    private final Map<Integer, RoomReservationBst<LocalTime>> roomTypeReservationsCache;
 
     @Autowired
-    public ReservationServiceImpl(ReservationRepository reservationRepository, RoomService roomService, SchedulerService schedulerService, Map<Integer, RoomReservationBST<LocalTime>> roomTypeReservationsCache) {
+    public ReservationServiceImpl(ReservationRepository reservationRepository, RoomService roomService, SchedulerService schedulerService, Map<Integer, RoomReservationBst<LocalTime>> roomTypeReservationsCache) {
         this.reservationRepository = reservationRepository;
         this.roomService = roomService;
         this.schedulerService = schedulerService;
@@ -74,7 +74,7 @@ public class ReservationServiceImpl implements ReservationService {
         List<Room> rooms = roomService.retrieveAllRooms();
         rooms.forEach(room -> {
             List<ReservationEntity> roomBookings = findBySearchParameters(LocalTime.of(0, 0), LocalTime.of(23, 59), Set.of(room.getId()), Pageable.unpaged()).stream().toList();
-            roomTypeReservationsCache.put(room.getId(), createReservationFromEntities(new RoomReservationBST<LocalTime>(), roomBookings));
+            roomTypeReservationsCache.put(room.getId(), createReservationFromEntities(new RoomReservationBst<LocalTime>(), roomBookings));
         });
     }
 
@@ -86,7 +86,7 @@ public class ReservationServiceImpl implements ReservationService {
         if (isOverlappingMaintenance(bookingDTO.getStartTime(), bookingDTO.getEndTime())) {
             //Can be pushed to a messaging queue to process later and also log the error in the database.
             //But it is not required as per the scope of the problem.
-            logger.error("Could not create booking as it overlaps with maintenance schedule.Send mail to " + bookingDTO.getEmailId());
+            logger.error(new StringBuilder().append("Could not create booking as it overlaps with maintenance schedule.Send mail to ").append(bookingDTO.getEmailId()).toString());
             throw new OverlappingMaintenanceException(OVERLAP_MAINTENANCE);
         }
         List<Room> tentativeRooms = roomService.findRoomsByCapacity(bookingDTO.getNoOfPersons());
@@ -100,14 +100,15 @@ public class ReservationServiceImpl implements ReservationService {
                 roomId = room.getId();
                 break;
             } catch (OperationNotAllowedException e) {
-                //TODO log - could not book for the room
-                //send a mail  that could not book
+                //too early to send a mail to the user.we need to check the next tentative room for availability.
+                logger.info(new StringBuilder().append("Unable to book the room").append(roomId).append("for  client uuid :").append(bookingDTO.getUuid()).toString());
+
             }
         }
         if (!reserved) {
             //Can be pushed to a messaging queue to process later and also log the error in the database.
             //But it is not required as per the scope of the problem.
-            logger.error("Could not create booking.Send mail to " + bookingDTO.getEmailId() + "and client uuid :" + bookingDTO.getUuid());
+            logger.error("Could not create booking.Send mail to %sand client uuid :%s".formatted(bookingDTO.getEmailId(), bookingDTO.getUuid()));
             throw new OperationNotAllowedException(CANNOT_CREATE_BOOKING);
         }
 
@@ -134,41 +135,42 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public void reserveRoomForMaintenance() {
-        //TODO also make the old data isinactive bcos yeserdays data should be invalidated
         List<Room> rooms = roomService.retrieveAllRooms();
         List<ScheduleEntity> maintenanceScheduleEntities = schedulerService.getActiveMaintenanceSchedules();
-        List<ReservationEntity> maintenanceReservationEntities = maintenanceScheduleEntities.stream()
-                .flatMap(scheduleEntity -> rooms.stream().map(room ->
-                        ReservationEntity.builder()
-                                .roomId(room.getId())
-                                .meetingDate(LocalDate.now())
-                                .startTime(scheduleEntity.getStartTime())
-                                .endTime(scheduleEntity.getEndTime())
-                                .timeDuration(Duration.between(scheduleEntity.getStartTime(), scheduleEntity.getEndTime()).toMinutes())
-                                .meetingTitle("Regular maintenance")
-                                .emailId("maintenance@room.com")
-                                .uuid(UUID.randomUUID().toString())
-                                .build()
-                ))
-                .collect(Collectors.toList());
+        List<ReservationEntity> maintenanceReservationEntities = new ArrayList<>();
+        for (ScheduleEntity scheduleEntity : maintenanceScheduleEntities) {
+            for (Room room : rooms) {
+                ReservationEntity regularMaintenance = ReservationEntity.builder()
+                        .roomId(room.getId())
+                        .meetingDate(LocalDate.now())
+                        .startTime(scheduleEntity.getStartTime())
+                        .endTime(scheduleEntity.getEndTime())
+                        .timeDuration(Duration.between(scheduleEntity.getStartTime(), scheduleEntity.getEndTime()).toMinutes())
+                        .meetingTitle("Regular maintenance")
+                        .emailId("maintenance@room.com")
+                        .uuid(UUID.randomUUID().toString())
+                        .build();
+                maintenanceReservationEntities.add(regularMaintenance);
+            }
+        }
         reservationRepository.saveAll(maintenanceReservationEntities);
     }
 
     @Override
-    public Map<Room, List<RoomReservationBST.Slots>> findAvailableSlotsBySearchParameters(LocalTime startTime, LocalTime endTime, Set<Integer> roomIds) {
-        Map<Room, List<RoomReservationBST.Slots>> availableSlots = new HashMap<>();
+    public Map<Room, List<RoomReservationBst.Slots>> findAvailableSlotsBySearchParameters(LocalTime startTime, LocalTime endTime, Set<Integer> roomIds) {
+        Map<Room, List<RoomReservationBst.Slots>> availableSlots = new HashMap<>();
         Map<Integer, Room> rooms = roomService.retrieveAllRooms().stream().collect(Collectors.toMap(Room::getId, Function.identity()));
         roomIds = Optional.ofNullable(roomIds)
                 .orElse(rooms.keySet());
         roomIds.forEach(roomId -> {
             Room room = Optional.ofNullable(rooms.get(roomId)).orElseThrow(() -> new RoomNotFoundException("The given room doesnt exist: " + roomId));
-            RoomReservationBST<LocalTime> roomReservations = roomTypeReservationsCache.get(roomId);
+            RoomReservationBst<LocalTime> roomReservations = roomTypeReservationsCache.get(roomId);
             availableSlots.put(room, roomReservations.findAvailableSlots(startTime, endTime));
         });
         return availableSlots;
     }
 
-    private <T extends Temporal> RoomReservationBST<T> createReservationFromEntities(RoomReservationBST<T> roomReservationBST, List<ReservationEntity> reservationEntities) {
+    private <T extends Temporal> RoomReservationBst<T> createReservationFromEntities(RoomReservationBst<T> roomReservationBST, List<ReservationEntity> reservationEntities) {
         if (reservationEntities == null || reservationEntities.isEmpty()) {
             return roomReservationBST;
         }

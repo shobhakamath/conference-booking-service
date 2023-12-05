@@ -3,6 +3,9 @@ package com.conference.roomservice.constant;
 import java.time.format.DateTimeFormatter;
 
 public class ConferenceConstants {
+    private ConferenceConstants(){
+
+    }
 
     public static final String DATE_FORMAT = "dd MMM yyyy";
     public static final String TIME_FORMAT = "HH:mm";

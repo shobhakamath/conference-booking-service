@@ -1,6 +1,6 @@
 package com.conference.roomservice.service;
 
-import com.conference.roomservice.bst.RoomReservationBST;
+import com.conference.roomservice.bst.RoomReservationBst;
 import com.conference.roomservice.controller.dto.CancelBookingDTO;
 import com.conference.roomservice.controller.dto.CreateBookingDTO;
 import com.conference.roomservice.entity.ReservationEntity;
@@ -30,5 +30,5 @@ public interface ReservationService {
 
     void reserveRoomForMaintenance();
 
-    Map<Room, List<RoomReservationBST.Slots>> findAvailableSlotsBySearchParameters(LocalTime startTime, LocalTime endTime, Set<Integer> roomIds);
+    Map<Room, List<RoomReservationBst.Slots>> findAvailableSlotsBySearchParameters(LocalTime startTime, LocalTime endTime, Set<Integer> roomIds);
 }

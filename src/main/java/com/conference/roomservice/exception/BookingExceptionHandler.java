@@ -28,7 +28,7 @@ public class BookingExceptionHandler {
 
     @ExceptionHandler(OverlappingMaintenanceException.class)
     @ResponseStatus(BAD_REQUEST)
-    ErrorDTO OverlappingMaintenanceExceptionHandler(final OverlappingMaintenanceException exception) {
+    ErrorDTO overlappingMaintenanceExceptionHandler(final OverlappingMaintenanceException exception) {
         log.error(exception.getMessage(), exception);
         return ErrorDTO.builder()
                 .code(CLIENT_ERROR)
@@ -38,7 +38,7 @@ public class BookingExceptionHandler {
 
     @ExceptionHandler(BookingNotFoundException.class)
     @ResponseStatus(NOT_FOUND)
-    ErrorDTO BookingNotFoundExceptionHandler(final BookingNotFoundException exception) {
+    ErrorDTO bookingNotFoundExceptionHandler(final BookingNotFoundException exception) {
         log.error(exception.getMessage(), exception);
         return ErrorDTO.builder()
                 .code(CLIENT_ERROR)
@@ -48,14 +48,13 @@ public class BookingExceptionHandler {
 
     @ExceptionHandler(RoomNotFoundException.class)
     @ResponseStatus(NOT_FOUND)
-    ErrorDTO RoomNotFoundExceptionHandler(final RoomNotFoundException exception) {
+    ErrorDTO roomNotFoundExceptionHandler(final RoomNotFoundException exception) {
         log.error(exception.getMessage(), exception);
         return ErrorDTO.builder()
                 .code(CLIENT_ERROR)
                 .messages(List.of(exception.getMessage()))
                 .build();
     }
-//TODO not working
 
     @ExceptionHandler(java.time.format.DateTimeParseException.class)
     @ResponseStatus(BAD_REQUEST)
@@ -84,7 +83,6 @@ public class BookingExceptionHandler {
                 .build();
     }
 
-    //TODO should I override this?
     @ExceptionHandler(Exception.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     ErrorDTO handleOtherExceptions(final Exception exception) {

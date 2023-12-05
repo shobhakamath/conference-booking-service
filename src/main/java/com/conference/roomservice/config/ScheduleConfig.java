@@ -4,7 +4,6 @@ import com.conference.roomservice.service.ReservationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -20,9 +19,8 @@ public class ScheduleConfig {
     }
 
     @Scheduled(cron = "0 0 0 * * ?") // Runs every day at midnight (00:00:00)
-    //@CacheEvict(cacheNames = {"scheduleCache","roomsCache"}, allEntries = true)
     public void reserveMaintenanceSchedule() {
-        logger.info("Scheduler running at midnight 00:00 : Reserve for maintenance schedule and load the BST cache" + ApplicationStartupListener.class);
+        logger.info("Scheduler running at midnight 00:00 : Reserve for maintenance schedule and load the BST cache" );
         reservationService.reserveRoomForMaintenance();
         reservationService.clearCache();
 

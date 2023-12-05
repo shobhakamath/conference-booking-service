@@ -16,10 +16,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//TODO junit version details. its better to check all the versions of the dependencies
-// and check all the import statements and get details
+
 @WebMvcTest(RoomController.class)
-public class RoomControllerTest {
+class RoomControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -27,7 +26,7 @@ public class RoomControllerTest {
 
 
     @Test
-    public void testCreateNotes() throws Exception {
+    void testCreateNotes() throws Exception {
         // Mock the service behavior
         when(roomService.retrieveAllRooms()).thenReturn(List.of(Room.builder()
                 .id(1)

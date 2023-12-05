@@ -1,7 +1,7 @@
 package com.conference.roomservice.service;
 
 
-import com.conference.roomservice.bst.RoomReservationBST;
+import com.conference.roomservice.bst.RoomReservationBst;
 import com.conference.roomservice.controller.dto.CancelBookingDTO;
 import com.conference.roomservice.controller.dto.CreateBookingDTO;
 import com.conference.roomservice.controller.dto.ResponseDTO;
@@ -19,6 +19,6 @@ public interface BookingService {
     ResponseDTO createBooking(CreateBookingDTO bookingDTO);
     ResponseDTO cancelBooking(CancelBookingDTO cancelBookingDTO);
     Page<ReservationEntity> findBySearchParameters(LocalTime startDateTime, LocalTime endDateTime, Set<Integer> rooms, Pageable pageable);
-    Map<Room, List<RoomReservationBST.Slots>> findAvailableSlotsBySearchParameters(LocalTime startTime, LocalTime endTime, Set<Integer> roomIds);
+    Map<Room, List<RoomReservationBst.Slots>> findAvailableSlotsBySearchParameters(LocalTime startTime, LocalTime endTime, Set<Integer> roomIds);
 }
 

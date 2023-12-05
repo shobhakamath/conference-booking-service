@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class BookingServiceImplTest {
+class BookingServiceImplTest {
     @Mock
     private ReservationService reservationService;
     @Mock
@@ -44,7 +44,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    public void testCreateBooking() throws Exception {
+    void testCreateBooking() throws Exception {
         when(reservationService.isOverlappingMaintenance(any(), any())).thenReturn(false);
         ResponseDTO responseDTO = bookingService.createBooking(CreateBookingDTO.builder()
                 .date(DATE_FORMATTER.format(LocalDate.now()))
@@ -54,14 +54,14 @@ public class BookingServiceImplTest {
                 .meetingTitle("Test Title")
                 .emailId("e@mail.com")
                 .build());
-        //TODO mockito times to the quweue
         Assertions.assertEquals("Queued to create the booking", responseDTO.getResponse());
     }
 
     @Test
-    public void testCreateBookingOverlapMaintenanceException() throws Exception {
+    void testCreateBookingOverlapMaintenanceException() throws Exception {
         when(reservationService.isOverlappingMaintenance(any(), any())).thenReturn(true);
-        OverlappingMaintenanceException thrown = assertThrows(
+        OverlappingMaintenanceException thrown;
+        thrown = Assertions.assertThrows(
                 OverlappingMaintenanceException.class,
                 () -> bookingService.createBooking(CreateBookingDTO.builder()
                         .date(DATE_FORMATTER.format(LocalDate.now()))
@@ -75,7 +75,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    public void testCancelBooking() throws Exception {
+    void testCancelBooking() throws Exception {
         when(reservationService.findByRoomIdAndStartTime(anyInt(), any())).thenReturn(ReservationEntity.builder().build());
         ResponseDTO responseDTO = bookingService.cancelBooking(CancelBookingDTO.builder()
                 .roomId(1)
@@ -85,9 +85,10 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    public void testCancelBookingNotFoundException() throws Exception {
+    void testCancelBookingNotFoundException() throws Exception {
         when(reservationService.findByRoomIdAndStartTime(anyInt(), any())).thenReturn(null);
-        BookingNotFoundException thrown = assertThrows(
+        BookingNotFoundException thrown;
+        thrown = assertThrows(
                 BookingNotFoundException.class,
                 () -> bookingService.cancelBooking(CancelBookingDTO.builder()
                         .roomId(1)

@@ -1,6 +1,6 @@
 package com.conference.roomservice.config;
 
-import com.conference.roomservice.bst.RoomReservationBST;
+import com.conference.roomservice.bst.RoomReservationBst;
 import com.conference.roomservice.controller.dto.CancelBookingDTO;
 import com.conference.roomservice.controller.dto.CreateBookingDTO;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +25,7 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public Map<Integer, RoomReservationBST<LocalTime>> roomTypeReservationsCache() {
+    public Map<Integer, RoomReservationBst<LocalTime>> roomTypeReservationsCache() {
         return new ConcurrentHashMap<>();
     }
 }
