@@ -40,8 +40,7 @@ http://localhost:8080/swagger-ui/index.html#/room-controller/getRooms
  - Password: password
 
 
-```mermaid
-mindmap
+```mindmap
   root((mindmap))
     Migration scripts and database creation
     Springboot Validation
@@ -50,7 +49,7 @@ mindmap
     Dockerization 
     Redis for caching
     Producer-Consumer in java.util.concurrent package to manage FCFS
-    Binary Search Tree for reservation system
+    Data structure: Binary Search Tree for reservation system
     Domains
         Room
             Retrieve rooms
