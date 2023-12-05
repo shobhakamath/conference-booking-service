@@ -9,7 +9,9 @@ http://localhost:8080/swagger-ui/index.html#/room-controller/getRooms
 - [Prerequisites](#prerequisites)
 - [Technical Specifications](#technical-specifications)
 - [Local Run](#local-run)
-- [Testing h2](#testing-rabbitmq)
+- [Testing h2](#testing-h2)
+- [Mind map](#mind-map)
+- [Sequence Diagram](#sequence-diagram)
 
 
 ## Introduction
@@ -21,10 +23,12 @@ http://localhost:8080/swagger-ui/index.html#/room-controller/getRooms
  - git to pull the code
 
 ## Technical Specifications
- - Springboot framework
+ - Springboot framework version 3.2.0
+ - Java 17
  - Redis for caching
+ - H2 for database
  - Docker for containerization
- - Spring scheduler for scheduling certain daily operations
+ - Spring scheduler for scheduling daily operations
 
 
 ## Local Run
@@ -40,42 +44,23 @@ http://localhost:8080/swagger-ui/index.html#/room-controller/getRooms
  - Password: password
 
 
-```mermaid
-mindmap
-  root((mindmap))
-    Migration scripts and database creation
-    Springboot Validation
-    H2 database
-    Logging
-    Dockerization 
-    Redis for caching
-    Producer-Consumer in java.util.concurrent package to manage FCFS
-    Data structure: Binary Search Tree for reservation system
-    Domains
-        Room
-            Retrieve rooms
-        Schedule
-            Reserve schedule for maintenance
-        Reservation
-            Create booking
-            Cancel booking
-            Get all the bookings
-            Get available slots
-    
-```
+## Mind map
+
+
 
 ## Sequence Diagram
 ```mermaid
 sequenceDiagram
-    participant RoomReservationBinarySearchTree
-    participant ConcurrentQueue as  java.util.concurrent.LinkedTransferQueue
-    participant CancellationRequestConsumer
-    participant ReservationRequestConsumer
+    participant User
     participant BookingService
+    participant ConcurrentQueue as LinkedTransferQueue
+    participant ReservationRequestConsumer
     participant ReservationService
     participant RoomService
     participant SchedulerService
-    participant User
+    participant RoomReservationBinarySearchTree
+
+    
     
     User->>+BookingService: POST /v1/bookings
         BookingService->>ConcurrentQueue: Push the CreateBookingDTO to the queue
@@ -84,7 +69,7 @@ sequenceDiagram
     ReservationRequestConsumer-->>+ReservationService: Calls the reserve function
         ReservationService-->>SchedulerService: Check if there are overlapping maintenance schedule
         ReservationService-->>RoomService: Check the tentative rooms based on the no of persons and the seating capactity of the room
-        ReservationService-->RoomReservationBinarySearchTree: check if reservation can be done for the given time and the duration
+        ReservationService-->>RoomReservationBinarySearchTree: check if reservation can be done for the given time and the duration
         ReservationService-->>ReservationService: Persist reservation in database
     ReservationService-->>-ReservationRequestConsumer: success
     ReservationRequestConsumer-->>-ConcurrentQueue: The consumer thread runs indefinitely consuming the requests
