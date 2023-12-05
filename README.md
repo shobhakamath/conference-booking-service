@@ -92,8 +92,6 @@ sequenceDiagram
     participant ConcurrentQueue as LinkedTransferQueue
     participant CancellationRequestConsumer
     participant ReservationService
-    participant RoomService
-    participant SchedulerService
     participant RoomReservationBinarySearchTree
 
     
