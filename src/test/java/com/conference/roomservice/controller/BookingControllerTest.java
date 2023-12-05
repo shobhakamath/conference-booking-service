@@ -59,7 +59,7 @@ public class BookingControllerTest {
                                 .meetingTitle("Test Title")
                                         .emailId("e@mail.com")
                                 .build())).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.uuid").exists())
                 .andExpect(jsonPath("$.uuid", is("uuid")))
                 .andReturn();

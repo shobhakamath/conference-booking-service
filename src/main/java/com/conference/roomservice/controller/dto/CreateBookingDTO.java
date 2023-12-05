@@ -4,9 +4,10 @@ import com.conference.roomservice.validation.annotation.DurationMultipleOf15;
 import com.conference.roomservice.validation.annotation.ShouldBeToday;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
@@ -24,12 +25,10 @@ import static com.conference.roomservice.constant.ConferenceConstants.DATE_FORMA
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @DurationMultipleOf15
 public class CreateBookingDTO implements Serializable {
-    @NotNull //TODO chck the date empty
-    @NotEmpty
+
     @Pattern(regexp = DATE_FORMAT_REGEX, message = "Not a valid date")
     @ShouldBeToday
-    //@Builder.Default
-    String date = "";
+    String date;
 
 
     @NotNull //TODO not working

@@ -158,6 +158,8 @@ public class ReservationServiceImpl implements ReservationService {
     public Map<Room, List<RoomReservationBST.Slots>> findAvailableSlotsBySearchParameters(LocalTime startTime, LocalTime endTime, Set<Integer> roomIds) {
         Map<Room, List<RoomReservationBST.Slots>> availableSlots = new HashMap<>();
         Map<Integer, Room> rooms = roomService.retrieveAllRooms().stream().collect(Collectors.toMap(Room::getId, Function.identity()));
+        roomIds = Optional.ofNullable(roomIds)
+                .orElse(rooms.keySet());
         roomIds.forEach(roomId -> {
             Room room = Optional.ofNullable(rooms.get(roomId)).orElseThrow(() -> new RoomNotFoundException("The given room doesnt exist: " + roomId));
             RoomReservationBST<LocalTime> roomReservations = roomTypeReservationsCache.get(roomId);

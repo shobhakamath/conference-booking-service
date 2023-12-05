@@ -18,11 +18,13 @@ public class ShouldBeTodayValidator implements ConstraintValidator<ShouldBeToday
     @Override
     public boolean isValid(String date, ConstraintValidatorContext context) {
         // Parse the string to LocalDate
-        try {
-            LocalDate localDate = LocalDate.parse(date, DATE_FORMATTER);
-            return localDate.isEqual(LocalDate.now());
-        } catch (DateTimeParseException e) {
-            System.out.println("Invalid date: " + e.getMessage());
+        if(date!=null && !date.isBlank()) {
+            try {
+                LocalDate localDate = LocalDate.parse(date, DATE_FORMATTER);
+                return localDate.isEqual(LocalDate.now());
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date: " + e.getMessage());
+            }
         }
         return false;
     }

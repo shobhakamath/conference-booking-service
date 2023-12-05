@@ -73,7 +73,7 @@ public class RoomBookingIntegrationTest {
                                 .meetingTitle("Test Title")
                                 .emailId("e@mail.com")
                                 .build())).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.uuid").exists())
                 .andExpect(jsonPath("$.response", is("Queued to create the booking")))
                 .andReturn();

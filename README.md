@@ -12,6 +12,8 @@ http://localhost:8080/swagger-ui/index.html#/room-controller/getRooms
 - [Testing h2](#testing-h2)
 - [Mind map](#mind-map)
 - [Sequence Diagram](#sequence-diagram)
+- [Binary Search Tree Implementation](#binary-search-tree-implementation)
+- [API Documentation](#)
 
 
 ## Introduction
@@ -40,6 +42,7 @@ http://localhost:8080/swagger-ui/index.html#/room-controller/getRooms
 
 ## Testing h2
  - http://localhost:8080/h2-console/login.do
+ - JDBC url: jdbc:h2:mem:rooms
  - Username: sa
  - Password: password
 
@@ -75,5 +78,34 @@ sequenceDiagram
     ReservationRequestConsumer-->>-ConcurrentQueue: The consumer thread runs indefinitely consuming the requests
     
 ```
+
+## Binary Search Tree Implementation
+
+The node in the BST are created in the order of requests.
+Each node is composed of the data structure
+{ 
+ element:LocalTime,
+ duration:long
+}
+Each node can have a left and a right node.
+Below shown a BST with nodes elements and their child nodes
+
+Inorder traversal of the BST gives :
+[(6:01,30),(7:29,30),(8:00,30),(9:32,30),(10:32,30),(11:32,30)]
+
+```mermaid
+graph TB;
+A((8:00,30))-->B((6:01,30))
+A-->C((10:32,30))
+B-->D(null)
+B-->E((7:29,30))
+C-->F((9:32,30))
+C-->G((11:32,30))
+
+```
+
+## API Documentation
+API documentation can be found by navigating to http://localhost:8080/swagger-ui/index.html#/
+
 
 

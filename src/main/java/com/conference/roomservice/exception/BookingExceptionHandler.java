@@ -16,7 +16,6 @@ import static org.springframework.http.HttpStatus.*;
 public class BookingExceptionHandler {
     public static final String CLIENT_ERROR = "client_side_error";
 
-    //TODO check the correct httpstatus .for now i have used bad_request
     @ExceptionHandler(OperationNotAllowedException.class)
     @ResponseStatus(BAD_REQUEST)
     ErrorDTO operationNotAllowedExceptionHandler(final OperationNotAllowedException exception) {
