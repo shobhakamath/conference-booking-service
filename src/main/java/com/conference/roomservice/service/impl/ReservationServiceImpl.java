@@ -139,21 +139,26 @@ public class ReservationServiceImpl implements ReservationService {
         List<ScheduleEntity> maintenanceScheduleEntities = schedulerService.getActiveMaintenanceSchedules();
         List<ReservationEntity> maintenanceReservationEntities = new ArrayList<>();
         for (ScheduleEntity scheduleEntity : maintenanceScheduleEntities) {
-            for (Room room : rooms) {
-                ReservationEntity regularMaintenance = ReservationEntity.builder()
-                        .roomId(room.getId())
-                        .meetingDate(LocalDate.now())
-                        .startTime(scheduleEntity.getStartTime())
-                        .endTime(scheduleEntity.getEndTime())
-                        .timeDuration(Duration.between(scheduleEntity.getStartTime(), scheduleEntity.getEndTime()).toMinutes())
-                        .meetingTitle("Regular maintenance")
-                        .emailId("maintenance@room.com")
-                        .uuid(UUID.randomUUID().toString())
-                        .build();
-                maintenanceReservationEntities.add(regularMaintenance);
+            Set<Integer> roomIds = rooms.stream().map(Room::getId).collect(Collectors.toSet());
+            if (reservationRepository.findByRoomIdInAndMeetingDateAndAndStartTimeBetween(roomIds, LocalDate.now(), scheduleEntity.getStartTime(), scheduleEntity.getEndTime(), Pageable.unpaged()).isEmpty()) {
+
+                for (Room room : rooms) {
+                    ReservationEntity regularMaintenance = ReservationEntity.builder()
+                            .roomId(room.getId())
+                            .meetingDate(LocalDate.now())
+                            .startTime(scheduleEntity.getStartTime())
+                            .endTime(scheduleEntity.getEndTime())
+                            .timeDuration(Duration.between(scheduleEntity.getStartTime(), scheduleEntity.getEndTime()).toMinutes())
+                            .meetingTitle("Regular maintenance")
+                            .emailId("maintenance@room.com")
+                            .uuid(UUID.randomUUID().toString())
+                            .build();
+                    maintenanceReservationEntities.add(regularMaintenance);
+                }
             }
         }
-        reservationRepository.saveAll(maintenanceReservationEntities);
+        if (!maintenanceReservationEntities.isEmpty())
+            reservationRepository.saveAll(maintenanceReservationEntities);
     }
 
     @Override

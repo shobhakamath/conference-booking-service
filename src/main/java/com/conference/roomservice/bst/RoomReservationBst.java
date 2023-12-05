@@ -17,7 +17,7 @@ public class RoomReservationBst<T extends Temporal> {
 
     private ReservationTree root = null;
 
-    public void insert(LocalTime element, long time) {
+    public synchronized void insert(LocalTime element, long time) {
 
         if (element == null) {
             throw new IllegalArgumentException("Cannot pass null arguments");
@@ -50,7 +50,7 @@ public class RoomReservationBst<T extends Temporal> {
     }
 
 
-    public void delete(LocalTime element) {
+    public synchronized void delete(LocalTime element) {
         root = delete(root, element);
     }
 
