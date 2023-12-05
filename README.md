@@ -64,4 +64,31 @@ mindmap
     
 ```
 
+## Sequence Diagram
+```mermaid
+sequenceDiagram
+    participant RoomReservationBinarySearchTree
+    participant ConcurrentQueue as  java.util.concurrent.LinkedTransferQueue
+    participant CancellationRequestConsumer
+    participant ReservationRequestConsumer
+    participant BookingService
+    participant ReservationService
+    participant RoomService
+    participant SchedulerService
+    participant User
+    
+    User->>+BookingService: POST /v1/bookings
+        BookingService->>ConcurrentQueue: Push the CreateBookingDTO to the queue
+    BookingService->>-User: Acknowledgement with id 200 OK status
+    ConcurrentQueue-->>+ReservationRequestConsumer: The consumer is a runnable task which reads the BookingDTO from the LinkedTransferqueue
+    ReservationRequestConsumer-->>+ReservationService: Calls the reserve function
+        ReservationService-->>SchedulerService: Check if there are overlapping maintenance schedule
+        ReservationService-->>RoomService: Check the tentative rooms based on the no of persons and the seating capactity of the room
+        ReservationService-->RoomReservationBinarySearchTree: check if reservation can be done for the given time and the duration
+        ReservationService-->>ReservationService: Persist reservation in database
+    ReservationService-->>-ReservationRequestConsumer: success
+    ReservationRequestConsumer-->>-ConcurrentQueue: The consumer thread runs indefinitely consuming the requests
+    
+```
+
 
