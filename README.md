@@ -46,7 +46,7 @@ http://localhost:8080/swagger-ui/index.html#/room-controller/getRooms
 
 ## Mind map
 
-(https://github.com/shobhakamath/conference-booking-service/blob/master/img/mindmap.png)
+![Compound Run](https://github.com/shobhakamath/conference-booking-service/blob/master/img/mindmap.png?raw=true)
 
 
 ## Sequence Diagram
