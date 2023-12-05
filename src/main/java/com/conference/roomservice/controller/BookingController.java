@@ -40,10 +40,10 @@ public class BookingController {
     //TODO validation not working
     @Operation(summary = "Reserve a room")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Room reserved successfully", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReservationEntity.class))}),
+            @ApiResponse(responseCode = "200", description = "Request queued successfully", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReservationEntity.class))}),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)})
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public ResponseDTO createBooking(@Valid @RequestBody CreateBookingDTO bookingDTO) {
         return bookingService.createBooking(bookingDTO);
     }
