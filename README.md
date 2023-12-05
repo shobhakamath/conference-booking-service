@@ -40,7 +40,8 @@ http://localhost:8080/swagger-ui/index.html#/room-controller/getRooms
  - Password: password
 
 
-```mindmap
+```mermaid
+mindmap
   root((mindmap))
     Migration scripts and database creation
     Springboot Validation
@@ -62,3 +63,5 @@ http://localhost:8080/swagger-ui/index.html#/room-controller/getRooms
             Get available slots
     
 ```
+
+
