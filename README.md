@@ -1,8 +1,6 @@
 # Conference room reservation service
 
 
-http://localhost:8080/swagger-ui/index.html#/room-controller/getRooms
-
 
 ### Table of Contents
 - [Introduction](#introduction)
@@ -14,7 +12,10 @@ http://localhost:8080/swagger-ui/index.html#/room-controller/getRooms
 - [Sequence Diagram](#sequence-diagram)
   - [Reserve a Room](#reserve-a-room)
   - [Delete a booking](#delete-a-booking)
-- [Binary Search Tree Implementation](#binary-search-tree-implementation)
+- [Data structures](#data-strcutures)
+  - [LinkedTransferQueue](#linkedtransferqueue)
+  - [ConcurrentHashMap](#concurrenthashmap)
+  - [Binary Search Tree Implementation](#binary-search-tree-implementation)
 - [Project Details](#project-details)
 - [API Documentation](#api-documentation)
 - [Future enhancements](#future-enhancements)
@@ -109,7 +110,19 @@ CancellationRequestConsumer-->>-ConcurrentQueue: The consumer thread runs indefi
     
 ```
 
+## Data Structures
+The following data structures are used to improve the concurrency, consistency and better optimization.
+## LinkedTransferQueue
+The LinkedTransferQueue belongs to java.util.concurrent package.The elements in the LinkedTransferQueue are ordered in FIFO order and are thread safe.
+In scenarios where there are multiple producers and consumers contending for access to a shared queue, the transfer mechanism of LinkedTransferQueue can reduce contention. The direct handoff between threads minimizes the time elements spend in the queue and reduces contention on the queue itself.
+The ordering of elements is based on the order in which threads arrive, providing reasonable performance in various scenarios.
+The time complexity is O(1) for insertion and the transfer operation.
+## ConcurrentHashMap
+ConcurrentHashMap is a class in Java that provides a high-performance and thread-safe implementation of the Map interface. It is particularly useful in scenarios where multiple threads need to access and modify a shared map concurrently.Hashmap provide get() and put() operations with time complexity of O(1).
 ## Binary Search Tree Implementation
+
+The reason for using BST for the reservation system is that:
+The use of BST optimises the search ,insertion and deletion operations in the complexity of the order O(logn).
 
 The node in the BST are created in the order of requests.
 Each node is composed of the data structure
