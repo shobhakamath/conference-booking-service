@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: CICD pipeline for notes application
+name: CICD pipeline for conference booking application
 
 on:
   push:
