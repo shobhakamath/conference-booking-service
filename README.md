@@ -17,6 +17,7 @@
   - [ConcurrentHashMap](#concurrenthashmap)
   - [Binary Search Tree Implementation](#binary-search-tree-implementation)
 - [Project Details](#project-details)
+- [CICD pipeline](#cicd-pipeline)
 - [API Documentation](#api-documentation)
 - [Future enhancements](#future-enhancements)
 
@@ -41,6 +42,7 @@
 ## Local Run
 
  - Checkout the code from github master branch
+ - docker pull shobhakamath/conference-booking-service:latest
  - Run docker compose up --build 
  - Run docker compose down to down the application
 
@@ -163,7 +165,9 @@ C-->G((11:32,30))
  - On the delete reservation call,the user request is pushed to the LinkedTransferQueue
    - The CancellationRequestConsumer listens the request and calls the ReservationService for room cancellation.
    - The ReservationService will check the booking and if it exists it will delete from both the DB and the cache.
-   - 
+
+## CICD Pipeline 
+The CICD pipeline is setup.For each commit,the project will be packaged and image will be pushed to dockerhub.
  
 ## API Documentation
 API documentation can be found by navigating to http://localhost:8080/swagger-ui/index.html#/
